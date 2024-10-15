@@ -6,13 +6,16 @@ namespace personapi_dotnet.Models.Entities;
 
 public partial class PersonaDbContext : DbContext
 {
+    private readonly IConfiguration configuration;
+
     public PersonaDbContext()
     {
     }
 
-    public PersonaDbContext(DbContextOptions<PersonaDbContext> options)
+    public PersonaDbContext(DbContextOptions<PersonaDbContext> options, IConfiguration configuration)
         : base(options)
     {
+        this.configuration = configuration;
     }
 
     public virtual DbSet<Estudio> Estudios { get; set; }
@@ -24,9 +27,12 @@ public partial class PersonaDbContext : DbContext
     public virtual DbSet<Telefono> Telefonos { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see https://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Server=localhost,1433;Database=persona_db;User Id=sa;Password=Passw0rd!123;TrustServerCertificate=True");
-
+    {
+        if (!optionsBuilder.IsConfigured)
+        {
+            optionsBuilder.UseSqlServer(configuration.GetConnectionString("DefaultConnection"));
+        }
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Estudio>(entity =>
