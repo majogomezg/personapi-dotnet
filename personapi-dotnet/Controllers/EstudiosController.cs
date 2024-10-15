@@ -26,15 +26,15 @@ namespace personapi_dotnet.Controllers
             return View(await _estudioRepository.GetAllEstudiosAsync());
         }
 
-        // GET: Estudios/Details/5
-        public async Task<IActionResult> Details(int? id)
+        // GET: Estudios/Details
+        public async Task<IActionResult> Details(int? idProf, int? ccPer)
         {
-            if (id == null)
+            if (idProf == null || ccPer == null)
             {
                 return NotFound();
             }
 
-            var estudio = await _estudioRepository.GetEstudioByIdAsync(id);
+            var estudio = await _estudioRepository.GetEstudioByIdAsync(idProf, ccPer);
             if (estudio == null)
             {
                 return NotFound();
@@ -46,7 +46,6 @@ namespace personapi_dotnet.Controllers
         // GET: Estudios/Create
         public async Task<IActionResult> Create()
         {
-            // Crear SelectList con formato 'Cc - Nombre Apellido' para personas
             ViewData["CcPer"] = new SelectList(
                 (await _personaRepository.GetAllPersonasAsync()).Select(p => new
                 {
@@ -54,7 +53,6 @@ namespace personapi_dotnet.Controllers
                     NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
                 }), "Cc", "NombreCompleto");
 
-            // Crear SelectList con formato 'Id - Nombre' para profesiones
             ViewData["IdProf"] = new SelectList(
                 (await _profesionRepository.GetAllProfesionsAsync()).Select(p => new
                 {
@@ -76,7 +74,6 @@ namespace personapi_dotnet.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Volver a crear las SelectLists en caso de error
             ViewData["CcPer"] = new SelectList(
                 (await _personaRepository.GetAllPersonasAsync()).Select(p => new
                 {
@@ -94,21 +91,20 @@ namespace personapi_dotnet.Controllers
             return View(estudio);
         }
 
-        // GET: Estudios/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        // GET: Estudios/Edit
+        public async Task<IActionResult> Edit(int? idProf, int? ccPer)
         {
-            if (id == null)
+            if (idProf == null || ccPer == null)
             {
                 return NotFound();
             }
 
-            var estudio = await _estudioRepository.GetEstudioByIdAsync(id);
+            var estudio = await _estudioRepository.GetEstudioByIdAsync(idProf, ccPer);
             if (estudio == null)
             {
                 return NotFound();
             }
 
-            // Crear SelectList con formato 'Cc - Nombre Apellido' para personas
             ViewData["CcPer"] = new SelectList(
                 (await _personaRepository.GetAllPersonasAsync()).Select(p => new
                 {
@@ -116,7 +112,6 @@ namespace personapi_dotnet.Controllers
                     NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
                 }), "Cc", "NombreCompleto", estudio.CcPer);
 
-            // Crear SelectList con formato 'Id - Nombre' para profesiones
             ViewData["IdProf"] = new SelectList(
                 (await _profesionRepository.GetAllProfesionsAsync()).Select(p => new
                 {
@@ -127,12 +122,12 @@ namespace personapi_dotnet.Controllers
             return View(estudio);
         }
 
-        // POST: Estudios/Edit/5
+        // POST: Estudios/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("IdProf,CcPer,Fecha,Univer")] Estudio estudio)
+        public async Task<IActionResult> Edit(int idProf, int ccPer, [Bind("IdProf,CcPer,Fecha,Univer")] Estudio estudio)
         {
-            if (id != estudio.IdProf)
+            if (idProf != estudio.IdProf || ccPer != estudio.CcPer)
             {
                 return NotFound();
             }
@@ -145,7 +140,7 @@ namespace personapi_dotnet.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!await _estudioRepository.EstudioExistsAsync(estudio.IdProf))
+                    if (!await _estudioRepository.EstudioExistsAsync(estudio.IdProf, estudio.CcPer))
                     {
                         return NotFound();
                     }
@@ -157,7 +152,6 @@ namespace personapi_dotnet.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
-            // Volver a crear las SelectLists en caso de error
             ViewData["CcPer"] = new SelectList(
                 (await _personaRepository.GetAllPersonasAsync()).Select(p => new
                 {
@@ -175,15 +169,15 @@ namespace personapi_dotnet.Controllers
             return View(estudio);
         }
 
-        // GET: Estudios/Delete/5
-        public async Task<IActionResult> Delete(int? id)
+        // GET: Estudios/Delete
+        public async Task<IActionResult> Delete(int? idProf, int? ccPer)
         {
-            if (id == null)
+            if (idProf == null || ccPer == null)
             {
                 return NotFound();
             }
 
-            var estudio = await _estudioRepository.GetEstudioByIdAsync(id);
+            var estudio = await _estudioRepository.GetEstudioByIdAsync(idProf, ccPer);
             if (estudio == null)
             {
                 return NotFound();
@@ -192,12 +186,12 @@ namespace personapi_dotnet.Controllers
             return View(estudio);
         }
 
-        // POST: Estudios/Delete/5
+        // POST: Estudios/Delete
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int idProf, int ccPer)
         {
-            await _estudioRepository.DeleteEstudioAsync(id);
+            await _estudioRepository.DeleteEstudioAsync(idProf, ccPer);
             return RedirectToAction(nameof(Index));
         }
     }
