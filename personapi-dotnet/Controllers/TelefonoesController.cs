@@ -48,7 +48,7 @@ namespace personapi_dotnet.Controllers
             ViewData["Duenio"] = new SelectList(personas.Select(p => new
             {
                 Cc = p.Cc,
-                NombreCompleto = $"{p.Nombre} {p.Apellido}"
+                NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
             }), "Cc", "NombreCompleto");
             return View();
         }
@@ -80,7 +80,7 @@ namespace personapi_dotnet.Controllers
             ViewData["Duenio"] = new SelectList(personas.Select(p => new
             {
                 Cc = p.Cc,
-                NombreCompleto = $"{p.Nombre} {p.Apellido}"
+                NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
             }), "Cc", "NombreCompleto", telefono.Duenio);
             return View(telefono);
         }
@@ -103,7 +103,7 @@ namespace personapi_dotnet.Controllers
             ViewData["Duenio"] = new SelectList(personas.Select(p => new
             {
                 Cc = p.Cc,
-                NombreCompleto = $"{p.Nombre} {p.Apellido}"
+                NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
             }), "Cc", "NombreCompleto", telefono.Duenio);
             return View(telefono);
         }
@@ -142,7 +142,7 @@ namespace personapi_dotnet.Controllers
             ViewData["Duenio"] = new SelectList(personas.Select(p => new
             {
                 Cc = p.Cc,
-                NombreCompleto = $"{p.Nombre} {p.Apellido}"
+                NombreCompleto = $"{p.Cc} - {p.Nombre} {p.Apellido}"
             }), "Cc", "NombreCompleto", telefono.Duenio);
             return View(telefono);
         }
