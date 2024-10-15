@@ -1,0 +1,35 @@
+name: personapi
+services:
+  sql_server:
+    container_name: sql_server
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    environment:
+      ACCEPT_EULA: Y
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: Passw0rd!123
+    ports:
+      - "1433:1433"
+    volumes:
+      - mssql_data:/var/opt/mssql
+    healthcheck:
+      test: [ "CMD-SHELL", "/opt/mssql-tools18/bin/sqlcmd -S localhost -U sa -P Passw0rd!123 -C -Q 'SELECT 1' || exit 1" ]
+      interval: 10s
+      retries: 10
+      start_period: 10s
+      timeout: 3s
+  
+  sql_server.configurator:
+    container_name: configurator
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    volumes:
+      - ./init:/docker-entrypoint-initdb.d
+    depends_on:
+      sql_server:
+        condition: service_healthy
+    command: >
+      bash -c '
+      /opt/mssql-tools18/bin/sqlcmd -S sql_server -U sa -P Passw0rd!123 -d master -C -i docker-entrypoint-initdb.d/init.sql;
+      echo "All done!";
+      '
+volumes:
+  mssql_data:
