@@ -16,6 +16,7 @@ builder.Services.AddDbContext<PersonaDbContext>(options =>
 
 // Register repository
 builder.Services.AddScoped<IPersonaRepository, PersonaRepository>();
+builder.Services.AddScoped<IProfesionRepository, ProfesionRepository>();
 
 builder.Services.AddControllersWithViews();
 
