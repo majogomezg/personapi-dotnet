@@ -51,5 +51,11 @@ namespace personapi_dotnet.Models.Repositories.Impl
         {
             return await _context.Telefonos.AnyAsync(e => e.Num == id);
         }
+
+        public async Task<bool> HasTelefonosAsync(int personaId)
+        {
+            return await _context.Telefonos.AnyAsync(t => t.Duenio == personaId);
+        }
+
     }
 }

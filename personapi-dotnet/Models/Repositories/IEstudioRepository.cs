@@ -12,5 +12,7 @@ namespace personapi_dotnet.Models.Repositories
         Task UpdateEstudioAsync(Estudio estudio);
         Task DeleteEstudioAsync(int idProf, int ccPer);
         Task<bool> EstudioExistsAsync(int idProf, int ccPer);
+        Task<bool> HasEstudiosAsync(int personaId);
+        Task<bool> HasEstudiosForProfesionAsync(int profesionId);
     }
 }

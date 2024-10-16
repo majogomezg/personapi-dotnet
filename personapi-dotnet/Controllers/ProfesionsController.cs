@@ -9,10 +9,12 @@ namespace personapi_dotnet.Controllers
     public class ProfesionsController : Controller
     {
         private readonly IProfesionRepository _profesionRepository;
+        private readonly IEstudioRepository _estudioRepository;
 
-        public ProfesionsController(IProfesionRepository profesionRepository)
+        public ProfesionsController(IProfesionRepository profesionRepository, IEstudioRepository estudioRepository)
         {
             _profesionRepository = profesionRepository;
+            _estudioRepository = estudioRepository;
         }
 
         // GET: Profesions
@@ -127,6 +129,22 @@ namespace personapi_dotnet.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
+            var profesion = await _profesionRepository.GetProfesionByIdAsync(id);
+
+            if (profesion == null)
+            {
+                return NotFound();
+            }
+
+            // Verificar si la profesión tiene estudios asociados
+            var tieneEstudios = await _estudioRepository.HasEstudiosForProfesionAsync(id);
+            if (tieneEstudios)
+            {
+                ModelState.AddModelError("", "No se puede eliminar la profesión porque tiene estudios asociados.");
+                return View(profesion);
+            }
+
+            // Si no tiene relaciones, proceder con la eliminación
             await _profesionRepository.DeleteProfesionAsync(id);
             return RedirectToAction(nameof(Index));
         }
