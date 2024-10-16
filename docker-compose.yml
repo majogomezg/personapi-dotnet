@@ -1,5 +1,17 @@
 name: personapi
 services:
+  personapi_web:
+    container_name: personapi_web
+    build:
+      context: .
+      dockerfile: personapi-dotnet/Dockerfile
+    ports:
+      - "5233:8080"
+    depends_on:
+      - sql_server
+    environment:
+      ConnectionStrings__DefaultConnection: "Server=sql_server,1433;Database=persona_db;User Id=sa;Password=Passw0rd!123;TrustServerCertificate=True;"
+      ASPNETCORE_ENVIRONMENT: Development
   sql_server:
     container_name: sql_server
     image: mcr.microsoft.com/mssql/server:2022-latest
