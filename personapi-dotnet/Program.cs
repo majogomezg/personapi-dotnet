@@ -20,7 +20,11 @@ builder.Services.AddScoped<IProfesionRepository, ProfesionRepository>();
 builder.Services.AddScoped<ITelefonoRepository, TelefonoRepository>();
 builder.Services.AddScoped<IEstudioRepository, EstudioRepository>();
 
+// Register controllers
 builder.Services.AddControllersWithViews();
+builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
@@ -29,6 +33,11 @@ if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Home/Error");
 }
+
+// Configure Swagger
+app.UseSwagger();
+app.UseSwaggerUI();
+
 app.UseStaticFiles();
 
 app.UseRouting();
